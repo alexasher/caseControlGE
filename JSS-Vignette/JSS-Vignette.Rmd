@@ -1,0 +1,67 @@
+---
+documentclass: nojss
+author:
+  - name: Alex Asher
+    affiliation: Texas A\&M University
+    address: >
+      Department of Statistics
+    email: \email{alexasher@stat.tamu.edu}
+title:
+  formatted: "Semiparametric Analysis of Polygenic Gene-Environment Interactions in Case-Control Studies with \\pkg{caseControlGE}"
+  # If you use tex in the formatted title, also supply version without
+  plain:     "Semiparametric Analysis of Polygenic Gene-Environment Interactions in Case-Control Studies with caseControlGE"
+  # For running headers, if needed
+  short:     "\\pkg{caseControlGE}: Gene-Environment Interactions in Case-Control Studies"
+abstract: >
+  Standard logistic regression analysis of case-control data has low power to detect gene-environment interactions, but until recently it was the only method that could be used on complex polygenic data for which parametric distributional models are not feasible.  Under the assumption of gene-environment independence in the underlying population, Stalder et. al. (2017, \emph{Biometrika}, **104**, 801-812) developed a retrospective method that treats both genetic and environmental variables nonparametrically.  We propose an improvement to the method of Stalder et. al. that increases the efficiency of the estimates with no additional assumptions and modest computational cost.  This improvement is achieved by treating the genetic and environmental variables symmetrically to generate two sets of parameter estimates that are combined to generate a more efficient estimate.  We employ a a semiparametric framework to develop the asymptotic theory of the estimator, and evaluate its performance via simulation studies.  The method is illustrated using data from a case-control study of breast cancer.
+keywords:
+  # at least one keyword must be supplied
+  formatted: [case-control study; gene-environment interaction; genetic epidemiology; retrospective method; semiparametric analysis; pseudolikelihood; polygenic analysis]
+  plain: [case-control study; gene-environment interaction; genetic epidemiology; retrospective method; semiparametric analysis; pseudolikelihood; polygenic analysis]
+preamble: >
+  \usepackage{amsmath}
+output: rticles::jss_article
+vignette: >
+  %\VignetteIndexEntry{Semiparametric Analysis of Polygenic Gene-Environment Interactions in Case-Control Studies with caseControlGE}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+\begin{titlepage}
+\end{titlepage}
+
+# Introduction
+
+\section{more stuff}
+
+This template demonstrates some of the basic latex you'll need to know to create a JSS article.
+
+## Code formatting
+
+Don't use markdown, instead use the more precise latex commands:
+
+* \proglang{Java}
+* \pkg{plyr}
+* \code{print("abc")}
+
+# R code
+
+Can be inserted in regular R markdown blocks.
+
+```{r}
+x <- 1:10
+x
+```
+
+
+# trying more sections
+
+sdfdsdsfdsdf
+
+## subsection
+
+sdfsdf
+
+```{r}
+cars
+```
+

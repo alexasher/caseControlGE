@@ -264,7 +264,6 @@ predict.spmle = function(object, newdata, se.fit=FALSE,
   } else {
     Terms <- delete.response(tt)
     m <- model.frame(Terms, newdata, na.action = na.action)
-    if(!is.null(cl <- attr(Terms, "dataClasses"))) {.checkMFClasses(cl, m)}
     X <- model.matrix(Terms, m, contrasts.arg = object$contrasts)
   }
   n <- length(object$residuals)

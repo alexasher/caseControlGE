@@ -1,0 +1,178 @@
+\documentclass[nojss]{jss}
+\usepackage[utf8]{inputenc}
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\author{
+Alex Asher\\Texas A\&M University
+}
+\title{Semiparametric Analysis of Polygenic Gene-Environment Interactions in
+Case-Control Studies with \pkg{caseControlGE}}
+
+\Plainauthor{Alex Asher}
+\Plaintitle{Semiparametric Analysis of Polygenic Gene-Environment Interactions in
+Case-Control Studies with caseControlGE}
+\Shorttitle{\pkg{caseControlGE}: Gene-Environment Interactions in Case-Control
+Studies}
+
+\Abstract{
+Standard logistic regression analysis of case-control data has low power
+to detect gene-environment interactions, but until recently it was the
+only method that could be used on complex polygenic data for which
+parametric distributional models are not feasible. Under the assumption
+of gene-environment independence in the underlying population, Stalder
+et. al. (2017, \emph{Biometrika}, \textbf{104}, 801-812) developed a
+retrospective method that treats both genetic and environmental
+variables nonparametrically. We propose an improvement to the method of
+Stalder et. al. that increases the efficiency of the estimates with no
+additional assumptions and modest computational cost. This improvement
+is achieved by treating the genetic and environmental variables
+symmetrically to generate two sets of parameter estimates that are
+combined to generate a more efficient estimate. We employ a a
+semiparametric framework to develop the asymptotic theory of the
+estimator, and evaluate its performance via simulation studies. The
+method is illustrated using data from a case-control study of breast
+cancer.
+}
+
+\Keywords{case-control study; gene-environment interaction; genetic epidemiology;
+retrospective method; semiparametric analysis; pseudolikelihood;
+polygenic analysis}
+\Plainkeywords{case-control study; gene-environment interaction; genetic epidemiology;
+retrospective method; semiparametric analysis; pseudolikelihood;
+polygenic analysis}
+
+%% publication information
+%% \Volume{50}
+%% \Issue{9}
+%% \Month{June}
+%% \Year{2012}
+%% \Submitdate{}
+%% \Acceptdate{2012-06-04}
+
+\Address{
+    Alex Asher\\
+  Texas A\&M University\\
+  Department of Statistics\\
+  E-mail: \email{alexasher@stat.tamu.edu}\\
+  
+  }
+
+\usepackage{amsmath}
+
+\begin{document}
+
+\begin{titlepage}
+\end{titlepage}
+
+\section{Introduction}\label{introduction}
+
+\section{more stuff}
+
+This template demonstrates some of the basic latex you'll need to know
+to create a JSS article.
+
+\subsection{Code formatting}\label{code-formatting}
+
+Don't use markdown, instead use the more precise latex commands:
+
+\begin{itemize}
+\tightlist
+\item
+  \proglang{Java}
+\item
+  \pkg{plyr}
+\item
+  \code{print("abc")}
+\end{itemize}
+
+\section{R code}\label{r-code}
+
+Can be inserted in regular R markdown blocks.
+
+\begin{CodeChunk}
+
+\begin{CodeInput}
+R> x <- 1:10
+R> x
+\end{CodeInput}
+
+\begin{CodeOutput}
+ [1]  1  2  3  4  5  6  7  8  9 10
+\end{CodeOutput}
+\end{CodeChunk}
+
+\section{trying more sections}\label{trying-more-sections}
+
+sdfdsdsfdsdf
+
+\subsection{subsection}\label{subsection}
+
+sdfsdf
+
+\begin{CodeChunk}
+
+\begin{CodeInput}
+R> cars
+\end{CodeInput}
+
+\begin{CodeOutput}
+   speed dist
+1      4    2
+2      4   10
+3      7    4
+4      7   22
+5      8   16
+6      9   10
+7     10   18
+8     10   26
+9     10   34
+10    11   17
+11    11   28
+12    12   14
+13    12   20
+14    12   24
+15    12   28
+16    13   26
+17    13   34
+18    13   34
+19    13   46
+20    14   26
+21    14   36
+22    14   60
+23    14   80
+24    15   20
+25    15   26
+26    15   54
+27    16   32
+28    16   40
+29    17   32
+30    17   40
+31    17   50
+32    18   42
+33    18   56
+34    18   76
+35    18   84
+36    19   36
+37    19   46
+38    19   68
+39    20   32
+40    20   48
+41    20   52
+42    20   56
+43    20   64
+44    22   66
+45    23   54
+46    24   70
+47    24   92
+48    24   93
+49    24  120
+50    25   85
+\end{CodeOutput}
+\end{CodeChunk}
+
+
+
+\end{document}
+

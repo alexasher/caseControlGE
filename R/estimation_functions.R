@@ -653,7 +653,7 @@ spmleCombo = function(D, G, E, pi1, data, nboot=50, ncores=1, control=list(), st
     ## Parallelize bootstrap is ncores > 1
     if(ncores > 1) {
       ## Keep the user from specifying too many cores
-      ncores = min(ncores, parallel::detectCores(logical=FALSE))
+      ncores = min(ncores, parallel::detectCores(logical=TRUE))
 
       ## Non-Windows operating systems can use mclapply with forking (faster)
       if(Sys.info()[1]!="Windows"){
