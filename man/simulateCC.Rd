@@ -114,6 +114,14 @@ a vector of length 6 for \code{betaGE_normPRS_bin}.
 If both G and E are multivariate, \code{beta_GE_} and \code{regress_E_} arguments
 iterate G quickly and E slowly.  In the example above, \code{betaGE_normPRS_bin}
 is ordered (G1*E1, G2*E1, G1*E2, G2*E2, G1*E3, G2*E3).
+
+\code{simulateCC} works by simulating a population using user-specified parameters,
+then selecting \code{ncase} cases and \code{ncontrol} controls as the case-control
+sample.  The entire population is used to calculate disease prevalance (reported
+when \code{control$trace > -1}).  Case-control studies deliberately oversample
+cases, so the distribution of G and E in the sample may be quite different from
+the distribution of G and E in the population (especially for variables that
+are strongly correlated with disease status).
 }
 \examples{
 set.seed(2018)

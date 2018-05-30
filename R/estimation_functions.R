@@ -559,13 +559,18 @@ spmleCombo = function(D, G, E, pi1, data, nboot=50, ncores=1, control=list(), st
   G = as.matrix(G)
   E = as.matrix(E)
 
+  ## Return argument names to default so nested calls can find them
+  Dname = quote(D)
+  Gname = quote(G)
+  Ename = quote(E)
+
   ## Model degrees of freedom
   df_model = length(Omega_start)
 
   ##### Treat G & E as in Stalder et al. 2017
-  spmle_E = spmle(D=D, G=G, E=E, pi1=pi1, data=data, control=con, swap=FALSE, startvals=Omega_start)
+  spmle_E = spmle(D=D, G=G, E=E, pi1=pi1, data=environment(), control=con, swap=FALSE, startvals=Omega_start)
   ##### Swap G & E
-  spmle_G = spmle(D=D, G=G, E=E, pi1=pi1, data=data, control=con, swap=TRUE, startvals=Omega_start)
+  spmle_G = spmle(D=D, G=G, E=E, pi1=pi1, data=environment(), control=con, swap=TRUE, startvals=Omega_start)
 
   ## Define matrices
   Omega_all = c(spmle_E$coefficients, spmle_G$coefficients)
