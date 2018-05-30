@@ -17,23 +17,21 @@ Case-Control Studies with caseControlGE}
 Studies}
 
 \Abstract{
-Standard logistic regression analysis of case-control data has low power
-to detect gene-environment interactions, but until recently it was the
-only method that could be used on complex polygenic data for which
-parametric distributional models are not feasible. Under the assumption
-of gene-environment independence in the underlying population, Stalder
-et. al. (2017, \emph{Biometrika}, \textbf{104}, 801-812) developed a
-retrospective method that treats both genetic and environmental
-variables nonparametrically. We propose an improvement to the method of
-Stalder et. al. that increases the efficiency of the estimates with no
-additional assumptions and modest computational cost. This improvement
-is achieved by treating the genetic and environmental variables
-symmetrically to generate two sets of parameter estimates that are
-combined to generate a more efficient estimate. We employ a a
-semiparametric framework to develop the asymptotic theory of the
-estimator, and evaluate its performance via simulation studies. The
-method is illustrated using data from a case-control study of breast
-cancer.
+Gene-environment interactions can be efficiently estimated in
+case-control data by exploiting the assumption of gene-environment
+independence in the source population, but until recently such
+techniques required parametric modelling of the genetic variables. The
+\pkg{caseControlGE} package implements the methods of
+\citeauthor{Stalder2017} (2017, \emph{Biometrika}, \textbf{104},
+801-812) and \citeauthor{Wang2018unpublished} (2018, unpublished), which
+exploit the assumption of gene-environment independence without placing
+any assumptions on the marginal distributions of the genetic and
+environmental variables. These methods are ideally suited for analysis
+of complex polygenic data for which parametric distributional models are
+not feasible. In addition to the two estimators, the package also
+supplies a function to simulate case-control data and several helper
+functions for use on model objects. Use of this package is illustrated
+using simulated data from a case-control study of breast cancer.
 }
 
 \Keywords{case-control study; gene-environment interaction; genetic epidemiology;
@@ -66,111 +64,120 @@ polygenic analysis}
 \begin{titlepage}
 \end{titlepage}
 
-\section{Introduction}\label{introduction}
+\def\bbeta{\mbox{\boldmath $\beta$}} \def\pr{\hbox{pr}}
 
-\section{more stuff}
+\section{Introduction}
 
-This template demonstrates some of the basic latex you'll need to know
-to create a JSS article.
+The \pkg{caseControlGE} package \citep{Asher2018R} contains tools for
+the analysis of case-control data using \proglang{R} \citep{R2018}. It
+implements the methods of \citet{Stalder2017} and
+\citet{Wang2018unpublished}, both of which fall under the class of
+semiparametric retrospective profile likelihood estimators. These
+methods are the first available to exploit the assumption of
+gene-environment independence while treating the genetic component
+nonparametrically. As such, they are well suited to replace logistic
+regression as the preferred method in situations where parametric
+distributional models are not feasible, such as in the analysis of
+complex polygenic data.
 
-\subsection{Code formatting}\label{code-formatting}
+An important aspect of case-control studies is that the covariates are
+sampled conditional on the response, disease status. Given the genetic
+and environmental covariates \(G\) and \(E\), we assume the risk of
+disease \(D\) in the underlying population follows the model
+\[ \pr(D=1 \mid G,X) = H\{\alpha_0 + m(G,X,\bbeta)\}, \] where
+\(H(x)=\{ 1 + \exp(-x)\}^{-1}\) is the logistic distribution function
+and \(m(G,X,\bbeta)\) is a function that describes the joint effect of
+\(G\) and \(X\) and is known up to the unspecified parameters of
+interest \(\bbeta\).
 
-Don't use markdown, instead use the more precise latex commands:
+Given the retrospective nature of case-control sampling, it is
+surprising that standard prospective logistic regression can be used to
+obtain unbiased estimates of \(\bbeta\) \citep{PrenticePyke1979}.
+Logistic regression requires no assumptions about the joint distribution
+of \(G\) and \(E\), but it suffers from low power when estimating
+\(G * E\) interaction effects. To gain efficiency,
+\citet{ChatterjeeCarroll2005} exploited the assumption of
+gene-environment independence in the source population to maximize the
+retrospective likelihood while profiling out the distribution of \(E\).
+Their method is available as the function \code{snp.logistic} in the
+\emph{Bioconductor} package \pkg{CGEN} \citep{CGEN2012}.
+
+The method of \citeauthor{ChatterjeeCarroll2005}, and subsequent methods
+utilizing the same retrospective profile likelihood framework, require a
+parametric model for the distribution of \(G\) given \(E\). This becomes
+difficult as the number and complexity of genetic variables in the model
+grows. Capitalizing on advances in high-throughput genomics, genome-wide
+association studies have identified scores of SNPs associated with
+complex diseases such as cancers and diabetes. Modern case-control
+studies of gene-environment interactions need efficient methodology that
+allows for a flexible and arbitrarily complex genetic component, such as
+multiple correlated SNPs and/or continuous polygenic risk scores (PRSs).
+
+The method of \citet{Stalder2017} extends the retrospective profile
+likelihood framework of \citeauthor{ChatterjeeCarroll2005}, dispensing
+with the need to model \(G\) parametrically. When the population disease
+rate \(\pi_1\) is known, the retrospective profile loglikelihood can be
+estimated (up to an additive constant) using just the case-control
+sample and without modeling the distribution of \(G\). When \(\pi_1\) is
+unknown but the disease is rare, estimates can be obtained using the
+\emph{rare disease approximation} that \(\pi_1 \approx 0\), which
+typically introduces negligable bias \citep{Stalder2017}.
+
+The semiparametric method of \citet{Stalder2017} is implemented
 
 \begin{itemize}
-\tightlist
 \item
-  \proglang{Java}
 \item
-  \pkg{plyr}
-\item
-  \code{print("abc")}
 \end{itemize}
 
-\section{R code}\label{r-code}
+These methods extend the retrospective profile likelihood framework
+developed by \citet{ChatterjeeCarroll2005}, which addresses the
+retrospective sampling scheme of case-control studies by which gains
+efficiency over logistic regression by exploiting the assumption of
+gene-environment independence in the population. The method of
+\citeauthor{ChatterjeeCarroll2005}
 
-Can be inserted in regular R markdown blocks.
+\pkg{caseControlGE} contains three main functions: \code{simulateCC},
+\code{spmle}, and \code{spmleCombo}, as well as several helper
+functions. Section \ref{sec:simulateCC} of this paper introduces
+\code{simulateCC} in the context of simulating case-control data
+analogous to the data analyzed in \cite{Wang2018unpublished}. Section
+\ref{sec:spmle} introduces \code{spmle} as a tool to analyze the
+simulated data, and section \ref{sec:spmleCombo} introduces
+\code{spmleCombo} to conduct a more efficient analysis of the simulated
+data.
 
-\begin{CodeChunk}
+\section{Simulating case-control data with simulateCC} \label{sec:simulateCC}
 
-\begin{CodeInput}
-R> x <- 1:10
-R> x
-\end{CodeInput}
-
-\begin{CodeOutput}
- [1]  1  2  3  4  5  6  7  8  9 10
-\end{CodeOutput}
-\end{CodeChunk}
-
-\section{trying more sections}\label{trying-more-sections}
-
-sdfdsdsfdsdf
-
-\subsection{subsection}\label{subsection}
-
-sdfsdf
+\cite{Wang2018unpublished} demonstrate the utility of their method
 
 \begin{CodeChunk}
 
 \begin{CodeInput}
-R> cars
+R> 1
 \end{CodeInput}
 
 \begin{CodeOutput}
-   speed dist
-1      4    2
-2      4   10
-3      7    4
-4      7   22
-5      8   16
-6      9   10
-7     10   18
-8     10   26
-9     10   34
-10    11   17
-11    11   28
-12    12   14
-13    12   20
-14    12   24
-15    12   28
-16    13   26
-17    13   34
-18    13   34
-19    13   46
-20    14   26
-21    14   36
-22    14   60
-23    14   80
-24    15   20
-25    15   26
-26    15   54
-27    16   32
-28    16   40
-29    17   32
-30    17   40
-31    17   50
-32    18   42
-33    18   56
-34    18   76
-35    18   84
-36    19   36
-37    19   46
-38    19   68
-39    20   32
-40    20   48
-41    20   52
-42    20   56
-43    20   64
-44    22   66
-45    23   54
-46    24   70
-47    24   92
-48    24   93
-49    24  120
-50    25   85
+[1] 1
 \end{CodeOutput}
 \end{CodeChunk}
+
+\section{Analyzing case-control data with spmle} \label{sec:spmle}
+
+\begin{CodeChunk}
+
+\begin{CodeInput}
+R> 1
+\end{CodeInput}
+
+\begin{CodeOutput}
+[1] 1
+\end{CodeOutput}
+\end{CodeChunk}
+
+\section{Analyzing case-control data with spmleCombo} \label{sec:spmleCombo}
+
+\bibliography{RJCrefs_05-30-2018}
 
 
 
