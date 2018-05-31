@@ -18,28 +18,27 @@ Studies}
 
 \Abstract{
 Gene-environment interactions can be efficiently estimated in
-case-control data by exploiting the assumption of gene-environment
-independence in the source population, but until recently such
-techniques required parametric modelling of the genetic variables. The
-\pkg{caseControlGE} package implements the methods of
-\citeauthor{Stalder2017} (2017, \emph{Biometrika}, \textbf{104},
-801-812) and \citeauthor{Wang2018unpublished} (2018, unpublished), which
-exploit the assumption of gene-environment independence without placing
-any assumptions on the marginal distributions of the genetic and
-environmental variables. These methods are ideally suited for analysis
-of complex polygenic data for which parametric distributional models are
+case-control data by methods that assume gene-environment independence
+in the source population, but until recently such techniques required
+parametric modelling of the genetic variables. The \pkg{caseControlGE}
+package implements the methods of \citeauthor{Stalder2017} (2017,
+\emph{Biometrika}, \textbf{104}, 801-812) and
+\citeauthor{Wang2018unpublished} (2018, unpublished), which exploit the
+assumption of gene-environment independence without placing any
+assumptions on the marginal distributions of the genetic or
+environmental variables. These methods are ideally suited for analyzing
+complex polygenic data for which parametric distributional models are
 not feasible. In addition to the two estimators, the package also
 supplies a function to simulate case-control data and several helper
 functions for use on model objects. Use of this package is illustrated
-using simulated data from a case-control study of breast cancer.
+by simulating and analyzing data from a case-control study of breast
+cancer.
 }
 
 \Keywords{case-control study; gene-environment interaction; genetic epidemiology;
-retrospective method; semiparametric analysis; pseudolikelihood;
-polygenic analysis}
+retrospective method; semiparametric analysis; polygenic analysis}
 \Plainkeywords{case-control study; gene-environment interaction; genetic epidemiology;
-retrospective method; semiparametric analysis; pseudolikelihood;
-polygenic analysis}
+retrospective method; semiparametric analysis; polygenic analysis}
 
 %% publication information
 %% \Volume{50}
@@ -57,7 +56,7 @@ polygenic analysis}
   
   }
 
-\usepackage{amsmath}
+\usepackage{amsmath} \usepackage{amssymb}
 
 \begin{document}
 
@@ -65,6 +64,7 @@ polygenic analysis}
 \end{titlepage}
 
 \def\bbeta{\mbox{\boldmath $\beta$}} \def\pr{\hbox{pr}}
+\def\E{{\mathbf E}}
 
 \section{Introduction}
 
@@ -131,7 +131,7 @@ association studies have identified scores of SNPs associated with
 complex diseases such as cancers and diabetes. Modern case-control
 studies of gene-environment interactions need efficient methodology that
 allows for a flexible and arbitrarily complex genetic component, such as
-multiple correlated SNPs and/or continuous polygenic risk scores (PRSs).
+multiple correlated SNPs and/or continuous polygenic risk scores.
 
 The method of \citet{Stalder2017} extends the retrospective profile
 likelihood framework of \citeauthor{ChatterjeeCarroll2005}, dispensing
@@ -164,7 +164,7 @@ analytic gradient and hessian, are written in C++ and compiled using
 \pkg{Rcpp} \citep{Eddelbuettel2013Rcpp}, providing a tremendous speedup
 over native \proglang{R} code. Extensive benchmarking and code profiling
 was conducted, and estimation functions were written to apply matrix
-operations to contiguous memory locations whenever possible, reducing
+operations to contiguous blocks of memory whenever possible, reducing
 memory latency and allowing modern processors to exploit data level
 parallelism and perform the same operation on multiple data points
 simultaneously.
@@ -175,7 +175,7 @@ starting values from logistic regression. \code{ucminf} is particularly
 well suited for this application because it allows us to precondition
 the optimization with the analytic hessian, and it evaluates the
 gradient after each call to the objective function. Calculating the
-gradient along with the likelihood adds negligable computational
+gradient along with the likelihood adds negligible computational
 complexity, so we call a single C++ function to compute them both, then
 return them separately to \code{ucminf}. This leads \code{ucminf} to
 converge in roughly half the time of the next-fastest optimizers
@@ -214,7 +214,95 @@ core.
 
 \section{Simulating case-control data with simulateCC} \label{sec:simulateCC}
 
-\cite{Wang2018unpublished} demonstrate the utility of their method
+\subsection{Data description}
+
+\cite{Wang2018unpublished} demonstrate the utility of their method by
+analyzing data from a case-control study of breast cancer. This
+case-control sample is taken from a large prospective cohort at the
+National Cancer Institute: the Prostate, Lung, Colorectal and Ovarian
+(PLCO) cancer screening trial \citep{canzian2010comprehensive}. The
+case-control study analyzed by \citeauthor{Wang2018unpublished} consists
+of 658 cases and 753 controls sampled from a cohort of 64,440
+non-Hispanic, white women aged 55 to 74, of whom 3.72\% developed breast
+cancer \citep{pfeiffer2013risk}. The data are available from the
+National Cancer Institute via a data transfer agreement, but cannot be
+distributed with the \pkg{caseControlGE} package. Fortunately, we can
+use the \pkg{caseControlGE} function \code{simulateCC} to generate a
+similar data set for analysis.
+
+Each of the 1411 subjects in the PLCO sample was genotyped for 21 SNPs
+that have been previously associated with breast cancer based on large
+genome-wide association studies. These SNPs were weighted by their
+log-odds-ratio coefficients and summed to define a polygenic risk score
+(PRS). A standardized version of this PRS, with mean zero and standard
+deviation one, was used as the genetic risk factor \(G\) by
+\citeauthor{Wang2018unpublished}. Early menarche is a known risk factor
+for breast cancer, and \citeauthor{Wang2018unpublished} used a binary
+indicator of whether the subject underwent early menarche as \(E\) (age
+at menarche \textless{} 14). Several environmental variables were
+recorded as part of the PLCO study, including body mass index (BMI). In
+our simulation, we will consider BMI in addition to the variables
+modeled by \citeauthor{Wang2018unpublished}.
+
+\subsection{Data simulation}
+
+To determine the appropriate distributions to use when simulating \(G\)
+and \(E\), we examine the PLCO data. In doing so, it is important to
+keep in mind that the case control sample is not representative of the
+source population. Case-control studies deliberately oversample cases,
+so the distribution of \(G\) and \(E\) in the sample may be quite
+different from the distribution of \(G\) and \(E\) in the population
+(especially for variables that are strongly correlated with disease
+status). \code{simulateCC} works by simulating a population using
+user-specified parameters, then selecting \code{ncase} cases and
+\code{ncontrol} controls as the case-control sample. To accurately
+simulate the genetic and environmental variables from the PLCO study, we
+need to estimate their distributions \emph{in the source population}.
+
+The simplest and most common way to estimate population parameters is to
+calculate them using just the controls. Case-control designs are
+typically used to study relatively rare diseases, and the bias
+introduced by using the cases as a stand-in for the population is
+usually quite small. This \emph{rare disease approximation} of
+population parameters is the best possible estimate when the true
+population disease rate \(\pi_1\) is unknown or not well estimated. When
+\(\pi_1\) is known, it is possible to calculate unbiased estimates by
+weighting the cases and controls by \(\pi_1\) and \((1 - \pi_1)\),
+respectively. (This technique is employed to great effect by
+\citeauthor{Stalder2017}, and is the reason that \code{spmle} requires
+the user to specify a value for \code{pi1}.)
+
+\citeauthor{Wang2018unpublished} report \(\beta_G = 0.459\) with
+\(p < 1e-4\), but they standardized \(G\) to mean zero and standard
+deviation one \emph{in the case-control sample}. \(G\) has a strong
+positive effect on disease risk, indicating that the distribution of
+\((G|D=0)\) is meaningfully different from the distribution of
+\((G|D=1)\). Specifically, \(\mathbf{E}(G|D=1) > \mathbf{E}(G|D=0)\).
+With a population disease rate of 0.0372, this implies
+\(\mathbf{E_{\rm pop}}(G) \approx \mathbf{E}(G|D=0) < 0\), where the
+subscript pop emphasizes that the expectation is in the source
+population. This causes no problem for \citeauthor{Wang2018unpublished},
+but it presents us with a dilemma: \(G \nsim \hbox{N}(0,1)\). If we
+simulate \(G \sim \hbox{N}(0,1)\) and use \(\beta_G = 0.459\) as
+reported in \citeauthor{Wang2018unpublished}, we
+
+should try to approximate the d
+
+To perform a realistic simulation we
+
+Rather than trying
+
+The entire population is used to calculate disease prevalence (reported
+when \code{control$trace > -1}).
+
+yields the information necessary to simulate the genetic and
+environmental variables.
+
+\begin{itemize}
+\tightlist
+\item
+  \(G\) is a standardized polygenic risk score - simulate from N(0,1)
+\end{itemize}
 
 \begin{CodeChunk}
 
@@ -226,6 +314,8 @@ R> 1
 [1] 1
 \end{CodeOutput}
 \end{CodeChunk}
+
+\subsection{Confirming the G-E independence assumption}
 
 \section{Analyzing case-control data with spmle} \label{sec:spmle}
 
