@@ -175,12 +175,13 @@ anova.spmle = function(object, ...) {
 
 ## Plot spmle objects
 #' @export
-plot.spmle = function(x, ...) {
+plot.spmle = function(x, main="", ...) {
   resids = residuals(x)
   preds = fitted(x)
   frmula = as.character(as.expression(formula(x)))
+  if(main=="") {main="Residuals vs Fitted"}
   xlabel = bquote(paste("Predicted Values,  spmle: ", .(frmula), ",   ", pi[1]== .(x$pi1)))
-  plot(x=preds, y=resids, xlab=xlabel, ylab="Pearson Residuals", main="Residuals vs Fitted")
+  plot(x=preds, y=resids, xlab=xlabel, ylab="Pearson Residuals", main=main)
   panel.smooth(preds, resids)
   abline(h = 0, lty = 3, col = "gray")
 }

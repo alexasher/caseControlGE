@@ -1,4 +1,18 @@
 
+## Plot spmle objects
+#' @export
+plot.spmle = function(x, main="", ...) {
+ resids = residuals(x)
+ preds = fitted(x)
+ frmula = as.character(as.expression(formula(x)))
+ if(main=="") {main="Residuals vs Fitted"}
+ xlabel = bquote(paste("Predicted Values,  spmle: ", .(frmula), ",   ", pi[1]== .(x$pi1)))
+ plot(x=preds, y=resids, xlab=xlabel, ylab="Pearson Residuals", main=main)
+ panel.smooth(preds, resids)
+ abline(h = 0, lty = 3, col = "gray")
+}
+
+panel.smooth(x=model.frame(z)[,"G"], y=resid(z))
 
 ##########################################################################################
 set.seed(1)
@@ -1889,4 +1903,12 @@ f(list(signif.legend=FALSE),signif.legend=NULL)
 f(list(signif.legend=NULL),signif.legend=NULL)
 
 #
+f=function(x, ...) {
+ cat("\n x$signif.legend", x$signif.legend)
+ # cat("\n signif.legend", signif.legend)
+ cat("\n enn(x$signif.legend)", enn(x$signif.legend))
+ # cat("\n enn(signif.legend)", enn(signif.legend))
+ # cat("\n missing(x$signif.legend)", missing(x$signif.legend))
+ cat("\n missing(signif.legend)", missing(signif.legend))
+}
 

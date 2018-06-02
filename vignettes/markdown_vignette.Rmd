@@ -33,14 +33,14 @@ header-includes:
 ---
 
 ```{r setup, cache=FALSE, include=FALSE}
-knitr::opts_chunk$set(collapse=TRUE, cache=TRUE, autodep=TRUE, prompt=FALSE, comment = "#>", strip.white=TRUE, warning=TRUE)
+knitr::opts_chunk$set(collapse=TRUE, cache=1, cache.comments=FALSE, prompt=FALSE, comment = "#>", strip.white=TRUE, warning=TRUE)
 library(knitr)
 library(pander)
-# quiet = function(x) { 
-#   sink(tempfile()) 
-#   on.exit(sink()) 
-#   invisible(force(x)) 
-# } 
+# quiet = function(x) {
+#   sink(tempfile())
+#   on.exit(sink())
+#   invisible(force(x))
+# }
 ```
 
 \captionsetup{justification=centering, margin=0in}
@@ -152,7 +152,7 @@ rm(tmp)
 ```
 
 After several iterations (commented out for speed), we determined that \texttt{beta0 = -3.41} produces a population disease rate of 0.0372.  Now we generate our simulated PLCO data.
-```{r}
+```{r simulate}
 #### Set the random seed for reproducability
 set.seed(70)
 
@@ -166,7 +166,7 @@ dat = simulateCC(ncase=658, ncontrol=753, beta0 = -3.41, betaG_normPRS=0.450,
 
 The function \texttt{simulateCC} returns a list with elements \texttt{D}, \texttt{G}, and \texttt{E}, which are numeric vectors or matrices.  We combine them into a \texttt{data.frame} to print the first 6 rows and tabulate by disease status.
 
-```{r}
+```{r dependson="simulate"}
 #### Examine the simulated data and tabulate the number of cases & controls
 kable(list(head(as.data.frame(dat)), table(dat$D, dnn="D")), cap="Simulated PLCO data", book=T)
 ```
@@ -177,7 +177,7 @@ But when analyzing real data, it is crucial to verify this assumption.  Violatio
 
 We do this by checking for dependence between \texttt{G} and \texttt{E} in the controls.  Environmental variable $E_1$ is binary, so we use a \emph{t}-test of $G$ over the two levels of $E_1$.  To test for dependence between $G$ and $E_2$, we conduct a correlation test.
 
-```{r}
+```{r dependson="simulate"}
 #### Save the indices of all controls in dat
 controls = which(dat$D == 0)
 
@@ -198,10 +198,9 @@ The function \texttt{spmle} is the backbone of \textbf{caseControlGE}; it is cal
 \texttt{spmle} returns an \texttt{S3} object of class \texttt{"spmle"}.  \textbf{caseControlGE} contains \texttt{spmle} methods for all applicable \texttt{S3} generics, such as \texttt{summary.spmle}, \texttt{print.spmle}, `anova.spmle`, `predict.spmle`, \texttt{confint.spmle}, etc.  
 
 We fit the gene-environment interaction model with \texttt{spmle}, and compare it to the estimates from standard logistic regression.  We do not need to fit the logistic regression model with a call to \texttt{glm} because \texttt{spmle} automatically fits a logistic regression model to obtain starting values.  This logistic regression model is returned with the fitted \texttt{spmle} object.
-```{r}
+```{r full, dependson="simulate"}
 #### Fit the spmle to the simulated PLCO data
 spmleFull = spmle(D=D, G=G, E=E, pi1=0.0372, data=dat)
-
 #### Print coefficient estimates from spmle and the logistic model returned by spmle
 kable(summary(spmleFull)$coefficients, caption="spmle, known pi1", digits=4)
 kable(summary(spmleFull$glm_fit)$coefficients, caption="logistic regression", digits=4)
@@ -211,7 +210,7 @@ The parameter estimates are extremely similar between the two models, but the \t
 
 In this instance we know the true population disease rate $\pi_1=0.0372$.  If $\pi_1$ were unknown we would calculate the \texttt{spmle} under the assumption that $\pi_1 \approx 0$.  Calculating the rare disease approximation using \texttt{spmle} is as simple as specifying \texttt{pi1 = 0} in the function call.
 
-```{r}
+```{r dependson="simulate"}
 kable(summary(spmle(D=D, G=G, E=E, pi1=0, data=dat))$coef, cap="spmle, rare disease", dig=4)
 ```
 
@@ -220,7 +219,7 @@ The estimates and standard errors are nearly identical to the model with known $
 \subsection{Reduced model test} \label{sec:spmle.reduced}
 
 Body mass index does not appear to be a significant predictor in this model.  The coefficients for the $E_2$ main effect and the $G*E_2$ interaction are near zero and both terms have large $p$ values, so we fit a reduced model without BMI.  To demonstrate the options controlling optimization, we disable hessian preconditioning and supply bad starting values to the optimizer while fitting the reduced model.
-```{r}
+```{r reduced, dependson="simulate"}
 #### Fit the reduced spmle with bad starting values
 spmleRed = spmle(D=D, G=G, E=E[,1], pi1=0.0372, data=dat, 
                  startvals=rep(NA, 4), control=list(use_hess=FALSE))
@@ -230,7 +229,7 @@ With invalid starting values, \texttt{ucminf} is unable to converge during its f
 
 `summary.spmle` reports the number of retries, number of `ucminf` iterations, and maximum gradient at the optimum, so we can confirm that the model really did converge while we check the parameter estimates.
 
-```{r}
+```{r dependson="reduced"}
 #### Check convergence and parameter estimates
 summary(spmleRed, signif.legend=FALSE)
 ```
@@ -239,24 +238,76 @@ We see that not only did the model converge, but it converged to nearly the same
 
 If the function \texttt{anova} is called on \texttt{spmle} objects, the method \texttt{anova.spmle} is used to calculate likelihood ratio tests of the models.  This is a valid way to test full vs reduced \texttt{spmle} models because the loglikelihood reported by \texttt{logLik.spmle} is accurate up to an additive constant. However, \texttt{anova} should not be used to compare an \texttt{spmle} model to a model fit by a different method.
 
-```{r}
+```{r dependson=c("full", "reduced")}
 #### Likelihood ratio test for reduced vs full model
 pander(anova(spmleRed, spmleFull))
 ```
 
-The negligable difference in loglikelihood and the large *p* value of the likelihood ratio test confirm our suspicion that BMI is not an important predictor of breast cancer status in the simulated PLCO data.  Now that we have completed variable selection, we will fit the Symmetric Combination Estimator of \citeauthor{Wang2018unpublished} using early menarche as the sole environmental variable.  The Symmetric Combination Estimator is not a maximum (pseudo)likelihood estimator like `spmle`; it is the optimal combination of two such estimators.  As such, it has no associated loglikelihood and the function `anova.spmle` cannot be used to compare models fit using the Symmetric Combination Estimator.
+The negligible difference in loglikelihood and large *p* value of the likelihood ratio test confirms our suspicion that BMI is not an important predictor of breast cancer status in the simulated PLCO data.  Now that we have completed variable selection, we will fit the Symmetric Combination Estimator of \citeauthor{Wang2018unpublished} using early menarche as the sole environmental variable.  The Symmetric Combination Estimator is not a maximum (pseudo)likelihood estimator like `spmle`; it is the optimal combination of two such estimators.  As such, it has no associated loglikelihood and the function `anova.spmle` cannot be used to compare models fit using the Symmetric Combination Estimator.
 
 \section{Analyzing case-control data with spmleCombo} \label{sec:spmleCombo}
 
 \subsection{Fitting spmleCombo with bootstrap standard error estimates} \label{sec:spmleCombo.boot}
 
-The SPMLE of \citeauthor{Stalder2017} exploits the gene-environment independence assumption to produce an estimator that is substantially more efficient than standard logistic regression.  It is remarkable then, that the Symmetric Combination Estimator of \citeauthor{Wang2018unpublished} is substantially more efficient than the SPMLE without requiring any additional assumptions about the data.  But there is no free lunch, and the challenge presented by the Symmetric Combination Estimator is that its standard error converges to its asymptotic limit very slowly, making asymptotic standard error estimates imprecise and unreliable in practice.
+The SPMLE of \citeauthor{Stalder2017} exploits the gene-environment independence assumption to produce an estimator that is substantially more efficient than standard logistic regression.  It is remarkable then, that the Symmetric Combination Estimator of \citeauthor{Wang2018unpublished} is yet more efficient than the SPMLE without requiring any additional assumptions about the data.  But there is no free lunch, and the challenge presented by the Symmetric Combination Estimator is that its standard error converges to its asymptotic limit very slowly, making asymptotic standard error estimates imprecise and unreliable in practice.
 
-the increased efficiency of the Symmetric Combination Estimator comes with the difficulty that asymptotic standard error 
+The **caseControlGE** implementation of the Symmetric Combination Estimator, `spmleCombo`, estimates standard error using the balanced bootstrap recommended by \citeauthor{Wang2018unpublished}, wherein cases and controls are resampled separately to maintain their sample sizes.  To speed up the process, `spmleCombo` can run the bootstrap on multiple cores in parallel with the argument `ncores`.  By default, `spmleCombo` uses 50 bootstraps to estimate the standard error, executed in series on a single core.  This is typically sufficient to obtain a reasonable estimate of standard error without undue computational burden.  Users with multiple cores, small data sets, or copious free time can increase the number of bootstraps for more precise estimates, though there are diminishing returns in precision as the number of bootstraps grows large.  Here we use 100 bootstraps distributed between 2 cores.
 
-In the code below we coerce \texttt{dat} into a \texttt{data.frame} and drop $E_2$ from the \texttt{data} that is passed to \texttt{spmle}.
-% spmleCom = spmleCombo(D=D, G=G, E=E.1, pi1=0.0372, data=as.data.frame(dat)[,-4], nboot=0)
-% spmleCom = spmleCombo(D=D, G=G, E=E[,1], pi1=0.0372, data=dat, nboot=0)
+```{r symCombo, cache=1, cache.comments=FALSE, dependson="simulate"}
+#### Set seed for reproducability, then fit spmleCombo with 100 bootstraps and 2 cores
+set.seed(75)
+comboRed = spmleCombo(D=D, G=G, E=E.1, pi1=0.0372, 
+                      data=as.data.frame(dat)[,-4], nboot=100, ncores=2)
+```
+
+When we fit the SPMLE `spmleRed` in \cref{sec:spmle.reduced}, we removed BMI from the model by specifying `E=E[,1]`.  In the code above we accomplish the same effect by coercing \texttt{dat} into a \texttt{data.frame} and dropping $E_2$ from the \texttt{data} that is passed to \texttt{spmleCombo}.  
+
+```{r dependson="symCombo"}
+#### Print coefficient estimates for the Symmetric Combo reduced model
+kable(summary(comboRed)$coefficients, caption="Symmetric Combo, known pi1", digits=4)
+#### Ratio of variances: logistic regression / Symmetric Combo
+pander(t(diag(vcov(comboRed$glm_fit))/diag(vcov(comboRed))), 
+       cap="Ratio of variances: logistic / Symmetric Combo")
+```
+
+The improvement in efficiency between the Symmetric Combination and the SPMLE is more modest than the gain from using the SPMLE over logistic regression.  But with no additional assumptions and a "cost" measured in minutes if not seconds, the Symmetric Combination takes the day.  And because the Symmetric Combination is a combination of two SPMLE models, `spmleCombo` includes both SPMLE fits in the `spmle` object it returns.  The first of which, labeled `spmle_E` because its likelihood was profiled over the distribution of $E$, is the same reduced model we fit with `spmle`.  The symmetric counterpart, which maximized the likelihood profiled over the distribution of $G$, is returned as `spmle_G`.
+
+```{r dependson=c("symCombo, reduced")}
+#### Verify that the "spmle_E" component of comboRed is the same as spmleRed from section 3.2
+all.equal(coef(comboRed$spmle_E), coef(spmleRed), check.attributes=FALSE)
+
+#### Print coefficient estimates for the SPMLE profiled over G
+kable(summary(comboRed$spmle_G)$coef, cap="spmle profiled over G", digits=4)
+```
+
+The estimates from the SPMLE profiled over $G$ bear a striking similarity to those from version profiled over $E$.  It is this correlation that makes the asymptotic standard error of the Symmetric Combination Estimator so slow to converge to its asymptotic limit.  `spmleCombo` will (grudgingly) report the asymptotic standard error estimate if we disable the bootstrap with `nboot = 0`.  This triggers a warning, which we will see when we calculate the Symmetric Combination Estimator using the rare disease approximation.
+
+```{r asyCombo, dependson="simulate"}
+#### Force spmleCombo to report the asymptotic SE for the rare disease model
+comboRare = spmleCombo(D=D, G=G, E=E.1, pi1=0, data=as.data.frame(dat)[,-4], nboot=0)
+```
+
+If we *only* want point estimates of the parameters, and not their standard errors, we can ignore this warning.  But if we want *p*-values or confidence intervals, we should not put faith in the asymptotic estimates of standard error.
+
+```{r dependson="asyCombo"}
+#### Print coefficient estimates with asymptotic SE for the rare disease approximation
+kable(summary(comboRare)$coefficients, caption="spmleCombo, rare : Asymptotic SE", digits=4)
+```
+
+The parameter estimates are perfectly reasonable, but the asymptotic standard error estimates for $G$ and $G * E_1$ are completely unbelievable.
+
+\subsection{Residual analysis and predictions} \label{sec:spmleCombo.residPred}
+
+Diagnostic plots of the Pearson residuals from the SPMLE or Symmetric Combination models are interpreted similarly to diagnostic plots from logistic regression.  We do not expect normally distributed residuals with a binary response.  Instead we check that the expected value of the residual is near 0 over the range of fitted values.  **caseControlGE** provides the `plot.spmle` function to do just this, and draws a lowess curve through the residuals.
+
+```{r dependson="symCombo"}
+
+```
+The two model specifications are equivalent, but when we want to use the model to make predict... which is why we set check.attributes=false when comparing them
+
+The only difference between the two model specifications is that
+
+
 
 \bibliographystyle{biomAbhra}
 \bibliography{alexrefs}
