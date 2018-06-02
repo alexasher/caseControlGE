@@ -27,20 +27,14 @@ header-includes:
   - \usepackage{amssymb}
   - \usepackage{natbib}
   - \usepackage{caption}
-  # - \usepackage{placeins}
   - \usepackage{setspace}
   - \usepackage{cleveref}
 ---
 
 ```{r setup, cache=FALSE, include=FALSE}
-knitr::opts_chunk$set(collapse=TRUE, cache=1, cache.comments=FALSE, prompt=FALSE, comment = "#>", strip.white=TRUE, warning=TRUE)
+knitr::opts_chunk$set(collapse=TRUE, cache=1, cache.comments=FALSE, cache.path="cache/", prompt=FALSE, comment = "#>", strip.white=TRUE, warning=TRUE)
 library(knitr)
 library(pander)
-# quiet = function(x) {
-#   sink(tempfile())
-#   on.exit(sink())
-#   invisible(force(x))
-# }
 ```
 
 \captionsetup{justification=centering, margin=0in}
@@ -260,7 +254,7 @@ comboRed = spmleCombo(D=D, G=G, E=E.1, pi1=0.0372,
                       data=as.data.frame(dat)[,-4], nboot=100, ncores=2)
 ```
 
-When we fit the SPMLE `spmleRed` in \cref{sec:spmle.reduced}, we removed BMI from the model by specifying `E=E[,1]`.  In the code above we accomplish the same effect by coercing \texttt{dat} into a \texttt{data.frame} and dropping $E_2$ from the \texttt{data} that is passed to \texttt{spmleCombo}.  
+When we fit the SPMLE `spmleRed` in \cref{sec:spmle.reduced}, we removed BMI from the model by specifying `E=E[,1]`.  In the code above we achieve the same effect by coercing \texttt{dat} into a \texttt{data.frame} and dropping $E_2$ from the \texttt{data} that is passed to \texttt{spmleCombo}.  We examine the parameter estimates and variance.
 
 ```{r dependson="symCombo"}
 #### Print coefficient estimates for the Symmetric Combo reduced model
@@ -270,7 +264,7 @@ pander(t(diag(vcov(comboRed$glm_fit))/diag(vcov(comboRed))),
        cap="Ratio of variances: logistic / Symmetric Combo")
 ```
 
-The improvement in efficiency between the Symmetric Combination and the SPMLE is more modest than the gain from using the SPMLE over logistic regression.  But with no additional assumptions and a "cost" measured in minutes if not seconds, the Symmetric Combination takes the day.  And because the Symmetric Combination is a combination of two SPMLE models, `spmleCombo` includes both SPMLE fits in the `spmle` object it returns.  The first of which, labeled `spmle_E` because its likelihood was profiled over the distribution of $E$, is the same reduced model we fit with `spmle`.  The symmetric counterpart, which maximized the likelihood profiled over the distribution of $G$, is returned as `spmle_G`.
+Parameter estimates from the Symmetric Combination Estimator are very similar to those of the SPMLE, but the efficiency is greater still.  The lack of a viable asymptotic standard error is an inconvenience, but with no additional assumptions and a compute time measured in minutes if not seconds, the Symmetric Combination takes the day.  And because the Symmetric Combination is a combination of two SPMLE models, `spmleCombo` includes both SPMLE fits in the `spmle` object it returns.  The first of which, labeled `spmle_E` because its likelihood was profiled over the distribution of $E$, is the same reduced model we fit with `spmle` in \cref{sec:spmle.reduced}.  The symmetric counterpart, which maximizes the likelihood profiled over the distribution of $G$, is returned as `spmle_G`.
 
 ```{r dependson=c("symCombo, reduced")}
 #### Verify that the "spmle_E" component of comboRed is the same as spmleRed from section 3.2
@@ -296,18 +290,106 @@ kable(summary(comboRare)$coefficients, caption="spmleCombo, rare : Asymptotic SE
 
 The parameter estimates are perfectly reasonable, but the asymptotic standard error estimates for $G$ and $G * E_1$ are completely unbelievable.
 
-\subsection{Residual analysis and predictions} \label{sec:spmleCombo.residPred}
+\subsection{Residual analysis} \label{sec:spmleCombo.resid}
 
-Diagnostic plots of the Pearson residuals from the SPMLE or Symmetric Combination models are interpreted similarly to diagnostic plots from logistic regression.  We do not expect normally distributed residuals with a binary response.  Instead we check that the expected value of the residual is near 0 over the range of fitted values.  **caseControlGE** provides the `plot.spmle` function to do just this, and draws a lowess curve through the residuals.
+Diagnostic plots of the Pearson residuals from the SPMLE or Symmetric Combination models are interpreted similarly to diagnostic plots from logistic regression.  As with logistic regression, we do not expect normally distributed residuals.  Instead we check that the expected value of the residual is near zero over the range of fitted values.  **caseControlGE** provides the `plot.spmle` function to do just this, and draws a lowess curve through the residuals.
 
-```{r dependson="symCombo"}
-
+```{r dependson="symCombo", cache=FALSE, fig.cap="Reduced model diagnostics: residuals vs predicted values"}
+#### Plot Pearson residuals vs predicted value
+plot(comboRed, main="Residuals vs Fitted: Symmetric Combo, known pi1")
 ```
-The two model specifications are equivalent, but when we want to use the model to make predict... which is why we set check.attributes=false when comparing them
 
-The only difference between the two model specifications is that
+The fitted lowess curve is near zero over the range of predicted values, raising no concerns about model fit.  Below we plot residuals vs. independent variables and find no issues
 
+```{r dependson="symCombo", cache=FALSE, fig.show="hold", out.width="50%", fig.cap="Reduced model diagnostics: residuals vs independent variables"}
+#### Plot Pearson residuals vs independent variables
+plot(resid(comboRed)~dat$G, ylab="residuals", xlab="PRS")
+panel.smooth(x=dat$G, y=resid(comboRed))
+boxplot(resid(comboRed) ~ dat$E[,1], notch=TRUE, names=c("late menarche", "early menarche"))
+```
 
+Finally, we plot the residuals against BMI, the independent variable we removed from the model after the likelihood ratio test indicated it was not improving the model.  We expect to see no pattern to the residuals.
+
+```{r dependson="symCombo", cache=FALSE, fig.cap="Reduced model diagnostics: residuals vs BMI, excluded from the model"}
+#### Plot Pearson residuals vs independent variables
+plot(resid(comboRed)~dat$E[,2], ylab="residuals", xlab="BMI", main="Residuals vs BMI")
+panel.smooth(x=dat$E[,2], y=resid(comboRed))
+```
+
+\subsection{Predictions} \label{sec:spmleCombo.pred}
+
+```{r transparency, echo=FALSE}
+## Add transparency, written by SachaEpskamp: github.com/SachaEpskamp/qgraph/blob/master/R/addTrans.R
+addTrans = function(color, trans) {
+  if(length(color)!=length(trans)&!any(c(length(color),length(trans))==1)) {stop("Vector lengths not correct")}
+  if(length(color)==1 & length(trans)>1) {color = rep(color,length(trans))}
+  if(length(trans)==1 & length(color)>1) {trans = rep(trans,length(color))}
+  num2hex = function(x) {
+    hex = unlist(strsplit("0123456789ABCDEF", split=""))
+    return(paste(hex[(x-x%%16)/16+1], hex[x%%16+1], sep=""))
+  }
+  rgb = rbind(col2rgb(color),trans)
+  res = paste("#", apply(apply(rgb, 2, num2hex), 2, paste, collapse=""), sep="")
+  return(res)
+}
+```
+
+Satisfied that the model fits well, our final task is to visualize the model by predicting the expected probability of developing breast cancer for subjects who experience early or late menarche, spanning the gamut of PRS values.  We use the function `predict.spmle`, which takes the same arguments as the `predict` methods for other classes.  The one detail we must keep in mind is that `spmle` and `spmleCombo` allow the `data` argument to be a `data.frame` *or* a `list`.  When we fit `comboRed` we coerced `dat` into a `data.frame`, so when we make predictions using `comboRed`, we will need to supply `newdata` as a `data.frame` with variable names "D", "G", and "E.1".
+
+The following lengthy block of code creates two sets of prediction data: one for women who underwent early menarche and one for women who did not.  We plot the curves for both groups of women along with a 95% confidence interval of the mean (`predict.spmle` does not calculate prediction intervals for an individual because they are not easily interpretable with a binary response).
+
+```{r dependson="symCombo", cache=FALSE, fig.cap="Predicted probability of developing breast cancer", fig.dim=c(7.5, 6)}
+#### Store vectors of polygenic risk scores, separated by disease status and menarche timing
+GcaseEarly = dat$G[which(dat$D==1 & dat$E[,1]==1)]
+GcaseLate = dat$G[which(dat$D==1 & dat$E[,1]==0)]
+GcontrolEarly = dat$G[which(dat$D==0 & dat$E[,1]==1)]
+GcontrolLate = dat$G[which(dat$D==0 & dat$E[,1]==0)]
+
+#### Create a grid of PRS values
+xg = seq(from=min(dat$G), to=max(dat$G), length=100)
+
+#### Create two sets of new data, one with early menarche, the other without
+newEarly = data.frame(G=xg, E.1=1)
+newLate = data.frame(G=xg, E.1=0)
+
+#### Predict risk and get CI for both data sets
+predEarly = predict(object=comboRed, newdata=newEarly, interval="confidence", type="response")
+predLate = predict(object=comboRed, newdata=newLate, interval="confidence", type="response")
+
+#### Calculate the boundaries of a 95% CI for each data set
+CIearly = data.frame(x=c(xg, rev(xg)), y=c(predEarly[,"lwr"], rev(predEarly[,"upr"])))
+CIlate = data.frame(x=c(xg, rev(xg)), y=c(predLate[,"lwr"], rev(predLate[,"upr"])))
+
+#### Plot the predictions for women with early age at menarche
+plot(x=xg, y=predEarly[,"fit"], xlim=range(xg), ylim=range(c(predEarly, predLate)), type="l", 
+     lwd=3, col="blue", xlab="Polygenic Risk Score", ylab="Predicted pr(D=1)",
+     xaxs="i", main="Effect of Polygenic Risk Score and Early Age at Menarche")
+
+#### Add the predictions for women with late age at menarche
+lines(x=xg, y=predLate[,"fit"], lwd=3, col="red")
+
+#### Shade the 95% CIs
+polygon(x=CIearly, col=addTrans("blue", 120), border=NA)
+polygon(x=CIlate, col=addTrans("red", 120), border=NA)
+
+#### Add a rug for each data set: Early in blue, Late in red, and cases above, controls below
+rug(GcaseEarly, ticksize=0.02, side=3, col="blue")
+rug(GcaseLate, ticksize=0.02, side=3, col="red")
+rug(GcontrolEarly, ticksize=0.02, side=1, col="blue")
+rug(GcontrolLate, ticksize=0.02, side=1, col="red")
+
+#### Add a vertical line at the population mean polygenic risk score
+abline(v=0, lty=3, col="darkslategray")
+
+#### Add a legend
+legend(x="topleft", inset=0.05, title="Age at Menarche", legend=c("Early", "Late"), col=c("blue", "red"), lwd=3)
+```
+
+Both early menarche and PRS have positive main effects, but the interaction has a negative coefficient.  Visualizing the model, we see how this interesting effect plays out: *on average*, women who experienced early menarche are at higher risk for breast cancer.  However, among women with a high PRS, those who underwent early menarche are at lower risk of developing breast cancer than those who underwent late menarche.  The difference in risk at the far right end of the scale appears dramatic, but examining the tic-marks indicating observed values of PRS we see that there is a lone outlier with PRS > 3, so we would be well advised to ignore or crop values of PRS above 3.
+
+On the other end of the spectrum, women who had early menarche experience higher risk of breast cancer than women with equally "good" genes who had late menarche.
+
+\pagebreak
 
 \bibliographystyle{biomAbhra}
 \bibliography{alexrefs}
