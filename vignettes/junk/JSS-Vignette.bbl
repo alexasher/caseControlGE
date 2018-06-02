@@ -1,0 +1,117 @@
+\begin{thebibliography}{15}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Asher(2018)]{Asher2018R}
+Alex Asher.
+\newblock \emph{Semiparametric Gene-Environment Interactions in Case-Control
+  Studies}, 2018.
+\newblock R package version 0.2.
+
+\bibitem[Bhattacharjee et~al.(2012)Bhattacharjee, Chatterjee, Han, Song, and
+  Wheeler]{CGEN2012}
+Samsiddhi Bhattacharjee, Nilanjan Chatterjee, Summer Han, Minsun Song, and
+  William Wheeler.
+\newblock \emph{CGEN: An R package for analysis of case-control studies in
+  genetic epidemiology}, 2012.
+\newblock R package version 3.6.2.
+
+\bibitem[Canzian et~al.(2010)Canzian, Cox, Setiawan, Stram, Ziegler, Dossus,
+  Beckmann, Blanch{\'e}, Barricarte, Berg, et~al.]{canzian2010comprehensive}
+Federico Canzian, David~G Cox, V~Wendy Setiawan, Daniel~O Stram, Regina~G
+  Ziegler, Laure Dossus, Lars Beckmann, H{\'e}l{\`e}ne Blanch{\'e}, Aurelio
+  Barricarte, Christine~D Berg, et~al.
+\newblock Comprehensive analysis of common genetic variation in 61 genes
+  related to steroid hormone and insulin-like growth factor-i metabolism and
+  breast cancer risk in the {NCI} breast and prostate cancer cohort consortium.
+\newblock \emph{Human Molecular Genetics}, 19\penalty0 (19):\penalty0
+  3873--3884, 2010.
+
+\bibitem[Chatterjee and Carroll(2005)]{ChatterjeeCarroll2005}
+N.~Chatterjee and R.~J. Carroll.
+\newblock Semiparametric maximum likelihood estimation in case-control studies
+  of gene-environment interactions.
+\newblock \emph{Biometrika}, 92:\penalty0 399--418, 2005.
+
+\bibitem[Eddelbuettel(2013)]{Eddelbuettel2013Rcpp}
+Dirk Eddelbuettel.
+\newblock \emph{Seamless {R} and {C++} Integration with {Rcpp}}.
+\newblock Springer, New York, 2013.
+\newblock \doi{10.1007/978-1-4614-6868-4}.
+\newblock ISBN 978-1-4614-6867-7.
+
+\bibitem[Kwee et~al.(2007)Kwee, Epstein, Manatunga, Duncan, Allen, and
+  Satten]{kwee2007simple}
+L~C Kwee, M~P Epstein, A~K Manatunga, R~Duncan, A~S Allen, and G~A Satten.
+\newblock Simple methods for assessing haplotype-environment interactions in
+  case-only and case-control studies.
+\newblock \emph{Genetic Epidemiology}, 31:\penalty0 75--90, 2007.
+
+\bibitem[Lin and Zeng(2006)]{lin2006likelihood}
+D.~Y. Lin and D.~Zeng.
+\newblock Likelihood-based inference on haplotype effects in genetic
+  association studies.
+\newblock \emph{Journal of the American Statistical Association}, 101\penalty0
+  (473):\penalty0 89--104, 2006.
+
+\bibitem[Modan et~al.(2001)Modan, Hartge, Hirsh-Yechezkel, Chetrit, Lubin,
+  Beller, Ben-Baruch, Fishman, Menczer, Struewing, et~al.]{modan2001parity}
+Baruch Modan, Patricia Hartge, Galit Hirsh-Yechezkel, Angela Chetrit, Flora
+  Lubin, Uzi Beller, Gilad Ben-Baruch, Amiram Fishman, Joseph Menczer,
+  Jeffery~P Struewing, et~al.
+\newblock Parity, oral contraceptives, and the risk of ovarian cancer among
+  carriers and noncarriers of a {BRCA1 or BRCA2} mutation.
+\newblock \emph{New England Journal of Medicine}, 345:\penalty0 235--240, 2001.
+
+\bibitem[Nielsen and Mortensen(2016)]{Nielsen2016ucminf}
+Hans~Bruun Nielsen and Stig~Bousgaard Mortensen.
+\newblock \emph{ucminf: General-Purpose Unconstrained Non-Linear Optimization},
+  2016.
+\newblock URL \url{https://CRAN.R-project.org/package=ucminf}.
+\newblock R package version 1.1-4.
+
+\bibitem[Pfeiffer et~al.(2013)Pfeiffer, Park, Kreimer, Lacey~Jr, Pee, Greenlee,
+  Buys, Hollenbeck, Rosner, Gail, et~al.]{pfeiffer2013risk}
+Ruth~M Pfeiffer, Yikyung Park, Aim{\'e}e~R Kreimer, James~V Lacey~Jr, David
+  Pee, Robert~T Greenlee, Saundra~S Buys, Albert Hollenbeck, Bernard Rosner,
+  Mitchell~H Gail, et~al.
+\newblock Risk prediction for breast, endometrial, and ovarian cancer in white
+  women aged 50 y or older: derivation and validation from population-based
+  cohort studies.
+\newblock \emph{PLoS Medicine}, 10:\penalty0 e1001492, 2013.
+
+\bibitem[Piegorsch et~al.(1994)Piegorsch, Weinberg, and Taylor]{Piegorsch1994}
+W.~W. Piegorsch, C.~R. Weinberg, and J.~A. Taylor.
+\newblock Non-hierarchical logistic models and case-only designs for assessing
+  susceptibility in population based case-control studies.
+\newblock \emph{Statistics in Medicine}, 13:\penalty0 153--162, 1994.
+
+\bibitem[Prentice and Pyke(1979)]{PrenticePyke1979}
+R.~L. Prentice and R.~Pyke.
+\newblock Logistic disease incidence models and case-control studies.
+\newblock \emph{Biometrika}, 66:\penalty0 403--411, 1979.
+
+\bibitem[{R Core Team}(2018)]{R2018}
+{R Core Team}.
+\newblock \emph{R: A Language and Environment for Statistical Computing}.
+\newblock R Foundation for Statistical Computing, Vienna, Austria, 2018.
+\newblock URL \url{http://www.R-project.org/}.
+
+\bibitem[Stalder et~al.(2017)Stalder, Asher, Liang, Carroll, Ma, and
+  Chatterjee]{Stalder2017}
+Odile Stalder, Alex Asher, Liang Liang, Raymond~J Carroll, Yanyuan Ma, and
+  Nilanjan Chatterjee.
+\newblock Semiparametric analysis of complex polygenic gene-environment
+  interactions in case-control studies.
+\newblock \emph{Biometrika}, 104\penalty0 (4):\penalty0 801--812, 2017.
+
+\bibitem[Wang et~al.(2018)Wang, Asher, and Carroll]{Wang2018unpublished}
+Tianying Wang, Alex Asher, and Raymond~J Carroll.
+\newblock Improved semiparametric analysis of polygenic gene-environment
+  interactions in case-control studies.
+\newblock \emph{To Appear}, 2018.
+
+\end{thebibliography}

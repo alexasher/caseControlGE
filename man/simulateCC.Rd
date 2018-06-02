@@ -22,11 +22,11 @@ simulateCC(ncase, ncontrol, beta0, betaG_SNP, betaG_normPRS, betaG_gammaPRS,
 
 \item{betaG_SNP, betaG_normPRS, betaG_gammaPRS, betaG_bimodalPRS}{optional coefficients for
 genetic main effects (at least one must be specified).  Genetic variables can include SNPs and polygenic
-risk scores with normal, gamma, and bimodal distributions.  Vector valued coefficients produce multivariate genetic data.
+risk scores with standard normal, gamma(20, 20), and bimodal distributions.  Vector valued coefficients produce multivariate genetic data.
 When simulating SNPs, you must provide \code{MAF} with the same length as \code{betaG_SNP}.}
 
 \item{betaE_bin, betaE_norm}{optional coefficients for environmental variable main effects (at least one must be specified).
-Environmental variables can include binary and normally distributed random variables.
+Environmental variables can include binary and standard normal random variables.
 Vector valued coefficients produce multivariate environmental data.}
 
 \item{betaGE_SNP_bin, betaGE_normPRS_bin, betaGE_gammaPRS_bin, betaGE_bimodalPRS_bin}{,}
@@ -95,7 +95,7 @@ Default \code{trace=0}.}
 \details{
 The user can specify up to four types of genetic variables, each of which can
 be multivariate: SNPs with additive effects under Hardy-Weinberg Equilibrium
-and polygenic risk scores with normal, gamma, and bimodal distributions.
+and polygenic risk scores with standard normal, gamma(20, 20), and bimodal distributions.
 Two types of environmental variables (binary and normal) can also be potentially multivariate.
 
 SNPs may be generated in linkage disequilibrium, yielding correlated SNPs.

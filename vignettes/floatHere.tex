@@ -1,0 +1,24 @@
+% \usepackage{amsmath}
+% \usepackage{amssymb}
+% \usepackage{natbib}
+% \usepackage{caption}
+% \usepackage{placeins}
+% \usepackage{float}
+% \usepackage{setspace}
+% \usepackage{cleveref}
+
+\let\origtable\table
+\let\endorigtable\endtable
+\renewenvironment{table}[1][2] {
+    \expandafter\origtable\expandafter[H]
+} {
+    \endorigtable
+}
+
+% \let\origfigure\figure
+% \let\endorigfigure\endfigure
+% \renewenvironment{figure}[1][2] {
+%     \expandafter\origfigure\expandafter[H]
+% } {
+%     \endorigfigure
+% }

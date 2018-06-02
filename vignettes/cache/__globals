@@ -1,4 +1,3 @@
-test	rnorm
 unnamed-chunk-1	library	set.seed	tmp	simulateCC	rm
 unnamed-chunk-2	set.seed	dat	simulateCC
 unnamed-chunk-3	kable	list	head	as.data.frame	dat	table	D

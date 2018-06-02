@@ -1,0 +1,9 @@
+unnamed-chunk-1	library	set.seed	tmp	simulateCC	rm
+unnamed-chunk-2	set.seed	dat	simulateCC
+unnamed-chunk-3	kable	list	head	as.data.frame	dat	table	D	T
+unnamed-chunk-4	controls	which	dat	D	pander	t.test	G	E	cor.test
+unnamed-chunk-5	spmleFull	spmle	D	G	E	dat	kable	summary	coefficients	glm_fit
+unnamed-chunk-6	kable	summary	spmle	D	G	E	dat	coef
+unnamed-chunk-7	spmleRed	spmle	D	G	E	dat	rep	list
+unnamed-chunk-8	summary	spmleRed
+unnamed-chunk-9	pander	anova	spmleRed	spmleFull

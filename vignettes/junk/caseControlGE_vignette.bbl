@@ -1,0 +1,82 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Asher}{Asher}{2018}]{Asher2018R}
+Asher, A. (2018).
+\newblock {\em Semiparametric Gene-Environment Interactions in Case-Control
+  Studies}.
+\newblock R package version 0.2.
+
+\bibitem[\protect\citeauthoryear{Bhattacharjee, Chatterjee, Han, Song, and
+  Wheeler}{Bhattacharjee et~al.}{2012}]{CGEN2012}
+Bhattacharjee, S., Chatterjee, N., Han, S., Song, M., and Wheeler, W. (2012).
+\newblock {\em CGEN: An R package for analysis of case-control studies in
+  genetic epidemiology}.
+\newblock R package version 3.6.2.
+
+\bibitem[\protect\citeauthoryear{Canzian, Cox, Setiawan, Stram, Ziegler,
+  Dossus, Beckmann, Blanch{\'e}, Barricarte, Berg, et~al\mbox{.}}{Canzian
+  et~al.}{2010}]{canzian2010comprehensive}
+Canzian, F., Cox, D.~G., Setiawan, V.~W., Stram, D.~O., Ziegler, R.~G., Dossus,
+  L., Beckmann, L., Blanch{\'e}, H., Barricarte, A., Berg, C.~D., et~al.
+  (2010).
+\newblock Comprehensive analysis of common genetic variation in 61 genes
+  related to steroid hormone and insulin-like growth factor-i metabolism and
+  breast cancer risk in the {NCI} breast and prostate cancer cohort consortium.
+\newblock {\em Human Molecular Genetics}, 19, 3873--3884.
+
+\bibitem[\protect\citeauthoryear{Chatterjee and Carroll}{Chatterjee and
+  Carroll}{2005}]{ChatterjeeCarroll2005}
+Chatterjee, N. and Carroll, R.~J. (2005).
+\newblock Semiparametric maximum likelihood estimation in case-control studies
+  of gene-environment interactions.
+\newblock {\em Biometrika}, 92, 399--418.
+
+\bibitem[\protect\citeauthoryear{Eddelbuettel}{Eddelbuettel}{2013}]{Eddelbuettel2013Rcpp}
+Eddelbuettel, D. (2013).
+\newblock {\em Seamless {R} and {C++} Integration with {Rcpp}}.
+\newblock Springer, New York.
+\newblock ISBN 978-1-4614-6867-7.
+
+\bibitem[\protect\citeauthoryear{Nielsen and Mortensen}{Nielsen and
+  Mortensen}{2016}]{Nielsen2016ucminf}
+Nielsen, H.~B. and Mortensen, S.~B. (2016).
+\newblock {\em ucminf: General-Purpose Unconstrained Non-Linear Optimization}.
+\newblock R package version 1.1-4.
+
+\bibitem[\protect\citeauthoryear{Pfeiffer, Park, Kreimer, Lacey~Jr, Pee,
+  Greenlee, Buys, Hollenbeck, Rosner, Gail, et~al\mbox{.}}{Pfeiffer
+  et~al.}{2013}]{pfeiffer2013risk}
+Pfeiffer, R.~M., Park, Y., Kreimer, A.~R., Lacey~Jr, J.~V., Pee, D., Greenlee,
+  R.~T., Buys, S.~S., Hollenbeck, A., Rosner, B., Gail, M.~H., et~al. (2013).
+\newblock Risk prediction for breast, endometrial, and ovarian cancer in white
+  women aged 50 y or older: derivation and validation from population-based
+  cohort studies.
+\newblock {\em PLoS Medicine}, 10, e1001492.
+
+\bibitem[\protect\citeauthoryear{Prentice and Pyke}{Prentice and
+  Pyke}{1979}]{PrenticePyke1979}
+Prentice, R.~L. and Pyke, R. (1979).
+\newblock Logistic disease incidence models and case-control studies.
+\newblock {\em Biometrika}, 66, 403--411.
+
+\bibitem[\protect\citeauthoryear{{R Core Team}}{{R Core Team}}{2018}]{R2018}
+{R Core Team} (2018).
+\newblock {\em R: A Language and Environment for Statistical Computing}.
+\newblock R Foundation for Statistical Computing, Vienna, Austria.
+
+\bibitem[\protect\citeauthoryear{Stalder, Asher, Liang, Carroll, Ma, and
+  Chatterjee}{Stalder et~al.}{2017}]{Stalder2017}
+Stalder, O., Asher, A., Liang, L., Carroll, R.~J., Ma, Y., and Chatterjee, N.
+  (2017).
+\newblock Semiparametric analysis of complex polygenic gene-environment
+  interactions in case-control studies.
+\newblock {\em Biometrika}, 104, 801--812.
+
+\bibitem[\protect\citeauthoryear{Wang, Asher, and Carroll}{Wang
+  et~al.}{2018}]{Wang2018unpublished}
+Wang, T., Asher, A., and Carroll, R.~J. (2018).
+\newblock Improved semiparametric analysis of polygenic gene-environment
+  interactions in case-control studies.
+\newblock {\em To Appear}, .
+
+\end{thebibliography}

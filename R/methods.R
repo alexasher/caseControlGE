@@ -16,7 +16,7 @@ print.spmle = function(x, digits=max(3L, getOption("digits") - 3L), ...) {
       cat("  [contrasts: ", apply(cbind(names(co), co), 1L, paste, collapse = "="), "]")
     }
     cat(":\n")
-    print.default(format(x$coefficients, digits = digits), print.gap = 2, quote = FALSE)
+    print.default(format(x$coefficients, digits=digits), print.gap=2, quote=FALSE)
   } else {cat("No coefficients\n\n")}
   cat("\nDegrees of Freedom:", x$df.null, "Total (i.e. Null); ", x$df.residual, "Residual\n")
   if(nzchar(mess <- naprint(x$na.action))) {cat("  (", mess, ")\n", sep = "")}
@@ -30,7 +30,9 @@ print.spmle = function(x, digits=max(3L, getOption("digits") - 3L), ...) {
 
 ## Summarize spmle objects (similar to summary.glm)
 #' @export
-summary.spmle = function (object, correlation = FALSE, symbolic.cor = FALSE, ...) {
+summary.spmle = function (object, correlation = FALSE, symbolic.cor = FALSE,
+                          signif.stars = getOption("show.signif.stars"),
+                          signif.legend = signif.stars, ...) {
   df.r = object$df.residual
   aliased = is.na(coef(object))
   p = object$rank
@@ -57,7 +59,9 @@ summary.spmle = function (object, correlation = FALSE, symbolic.cor = FALSE, ...
                              cov.unscaled = covmat,
                              cov.scaled = covmat,
                              iter = iter,
-                             retry = retry))
+                             retry = retry,
+                             signif.stars = signif.stars,
+                             signif.legend = signif.legend))
   if (correlation) {
     dd = sqrt(diag(covmat))
     ans$correlation = covmat/outer(dd, dd)
@@ -71,7 +75,7 @@ summary.spmle = function (object, correlation = FALSE, symbolic.cor = FALSE, ...
 ## Print summary of spmle objects (similar to print.summary.glm)
 #' @export
 print.summary.spmle = function (x, digits = max(3L, getOption("digits") - 3L), symbolic.cor = x$symbolic.cor,
-                                signif.stars = getOption("show.signif.stars"), ...) {
+                                signif.stars = getOption("show.signif.stars"), signif.legend = signif.stars, ...) {
   cat("\nCall:\n", paste(deparse(x$call), sep = "\n", collapse = "\n"), "\n\n", sep = "")
   cat("Pearson Residuals: \n")
   if (x$df.residual > 5) {
@@ -95,7 +99,9 @@ print.summary.spmle = function (x, digits = max(3L, getOption("digits") - 3L), s
       coefs = matrix(NA, length(aliased), 4L, dimnames = list(cn, colnames(coefs)))
       coefs[!aliased, ] = x$coefficients
     }
-    printCoefmat(coefs, digits = digits, signif.stars = signif.stars, na.print = "NA", ...)
+    if(missing(signif.legend) && enn(x$signif.legend)) {signif.legend = x$signif.legend}
+    if(missing(signif.stars) && enn(x$signif.stars)) {signif.stars = x$signif.stars}
+    printCoefmat(coefs, digits=digits, signif.stars=signif.stars, signif.legend=signif.legend, na.print="NA", ...)
   }
 
   if(!is.null(x$deviance)){

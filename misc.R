@@ -1,4 +1,6 @@
 
+
+##########################################################################################
 set.seed(1)
 dat = simulate_complex(ncase=200,
                        ncontrol=200,
@@ -1849,4 +1851,42 @@ pack <- "caseControlGE"
 path <- find.package(pack)
 system(paste(shQuote(file.path(R.home("bin"), "R")), "CMD", "Rd2pdf", shQuote(path)))
 
+enn=caseControlGE:::enn
+
+f=function(x, signif.legend=getOption("show.signif.stars"), ...) {
+ cat("\n x$signif.legend", x$signif.legend)
+ cat("\n signif.legend", signif.legend)
+ cat("\n enn(x$signif.legend)", enn(x$signif.legend))
+ cat("\n enn(signif.legend)", enn(signif.legend))
+ # cat("\n missing(x$signif.legend)", missing(x$signif.legend))
+ cat("\n missing(signif.legend)", missing(signif.legend))
+}
+
+f(list())
+f(list(signif.legend="lala"))
+f(list(signif.legend=TRUE))
+f(list(signif.legend=FALSE))
+f(list(signif.legend=NULL))
+f(list(),signif.legend="lala")
+f(list(),signif.legend=TRUE)
+f(list(),signif.legend=FALSE)
+f(list(),signif.legend=NULL)
+f(list(signif.legend="lala"),signif.legend="lala")
+f(list(signif.legend=TRUE),signif.legend="lala")
+f(list(signif.legend=FALSE),signif.legend="lala")
+f(list(signif.legend=NULL),signif.legend="lala")
+f(list(signif.legend="lala"),signif.legend=TRUE)
+f(list(signif.legend=TRUE),signif.legend=TRUE)
+f(list(signif.legend=FALSE),signif.legend=TRUE)
+f(list(signif.legend=NULL),signif.legend=TRUE)
+f(list(signif.legend="lala"),signif.legend=FALSE)
+f(list(signif.legend=TRUE),signif.legend=FALSE)
+f(list(signif.legend=FALSE),signif.legend=FALSE)
+f(list(signif.legend=NULL),signif.legend=FALSE)
+f(list(signif.legend="lala"),signif.legend=NULL)
+f(list(signif.legend=TRUE),signif.legend=NULL)
+f(list(signif.legend=FALSE),signif.legend=NULL)
+f(list(signif.legend=NULL),signif.legend=NULL)
+
+#
 
